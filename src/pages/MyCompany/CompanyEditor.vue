@@ -4,19 +4,23 @@
         <div class="new-company__body">
             <label class="new-company__label"
                 >Company name:
-                <input ref="company" v-model="newCompany.companyName" type="text" class="new-company__input"
+                <input ref="company-name" v-model="newCompany.companyName" type="text" class="new-company__input"
             /></label>
             <label class="new-company__label"
                 >Company rate:
-                <input ref="company" v-model="newCompany.companyRate" type="number" class="new-company__input"
+                <input ref="company-rate" v-model="newCompany.companyRate" type="number" class="new-company__input"
             /></label>
             <label class="new-company__label">
                 Year of foundation:
-                <input ref="company" v-model="newCompany.yearOfFoundation" type="number" class="new-company__input"
+                <input
+                    ref="company-year"
+                    v-model="newCompany.yearOfFoundation"
+                    type="number"
+                    class="new-company__input"
             /></label>
             <label class="new-company__label">
                 Company owner:
-                <input ref="company" v-model="newCompany.companyOwner" type="text" class="new-company__input"
+                <input ref="company-owner" v-model="newCompany.companyOwner" type="text" class="new-company__input"
             /></label>
         </div>
         <div class="new-company__button-body">
@@ -37,7 +41,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['gEditCompanyItem']),
+        ...mapGetters(['gCompanyForEdit']),
         valueTypeEditorParams() {
             return this.$route.params.type_editor
         },
@@ -46,40 +50,44 @@ export default {
             else return 'save change'
         },
     },
-    // mounted() {
-    //     this.$refs.company
-    // },
     created() {
         if (this.valueTypeEditorParams !== 1) {
-            this.aEditCompany(this.$route.params.id)
-            this.newCompany = { ...this.gEditCompanyItem }
+            this.newCompany = { ...this.gCompanyForEdit(this.$route.params.id) }
         }
     },
     methods: {
         ...mapActions(['aAddCompany', 'aEditCompany', 'aSaveChangeInformationCompany']),
         clickButton(company) {
-            // let validInputIndex = -1
-            // for (let i = 0; i < 4; i++) {
-            //     if (!this.$refs.company[i]) {
-            //         validInputIndex = i
-            //         break
-            //     }
-            // }
-            // if (validInputIndex !== -1) {
-            //     console.log(validInputIndex)
-            //     this.$refs.company[validInputIndex].focus()
-            // } else {
-            if (this.valueTypeEditorParams == 1) {
-                this.aAddCompany({
-                    id: new Date().getTime(),
-                    ...company,
-                })
-            } else {
-                this.aSaveChangeInformationCompany(company)
+            let validInputIndex = -1
+            let refName
+            console.log(this.$refs)
+            if (!this.newCompany.companyName) {
+                validInputIndex = 0
+                refName = 'company-name'
+            } else if (!this.newCompany.companyRate) {
+                validInputIndex = 1
+                refName = 'company-rate'
+            } else if (!this.newCompany.yearOfFoundation) {
+                validInputIndex = 2
+                refName = 'company-year'
+            } else if (!this.newCompany.companyOwner) {
+                validInputIndex = 3
+                refName = 'company-owner'
             }
-            this.newCompany = {}
-            this.$router.push({ name: 'company' })
-            // }
+            if (validInputIndex !== -1) {
+                this.$refs[refName].focus()
+            } else {
+                if (this.valueTypeEditorParams == 1) {
+                    this.aAddCompany({
+                        id: new Date().getTime(),
+                        ...company,
+                    })
+                } else {
+                    this.aSaveChangeInformationCompany(company)
+                }
+                this.newCompany = {}
+                this.$router.push({ name: 'company' })
+            }
         },
         clickBack() {
             this.$router.push({ name: 'company' })

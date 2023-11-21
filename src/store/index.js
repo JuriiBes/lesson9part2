@@ -33,12 +33,12 @@ export default createStore({
                 companyOwner: 'Grinch',
             },
         ],
-        editCompanyItem: {},
         companyFilter: {},
     },
     getters: {
         gCompanyList: (state) => state.companyList,
-        gEditCompanyItem: (state) => state.editCompanyItem,
+        gCompanyForEdit: (state) => (companyId) =>
+            state.companyList[state.companyList.findIndex((company) => company.id == companyId)],
         gFilteredCompanyList: (state) =>
             state.companyList.filter((company) => complianceVerification(company, state.companyFilter)),
     },
@@ -49,14 +49,10 @@ export default createStore({
         mAddCompany(state, company) {
             state.companyList.push(company)
         },
-        mEditCompany(state, idCompany) {
-            state.editCompanyItem = state.companyList[state.companyList.findIndex((company) => company.id == idCompany)]
-        },
         mSaveChangeInformationCompany(state, changeCompany) {
             state.companyList[state.companyList.findIndex((company) => company.id == changeCompany.id)] = {
                 ...changeCompany,
             }
-            state.editCompanyItem = {}
         },
         mCompanyFilter(state, filterData) {
             state.companyFilter = filterData
@@ -69,9 +65,6 @@ export default createStore({
         aAddCompany({ commit }, company) {
             commit('mAddCompany', company)
         },
-        aEditCompany({ commit }, idCompany) {
-            commit('mEditCompany', idCompany)
-        },
         aSaveChangeInformationCompany({ commit }, changeCompany) {
             commit('mSaveChangeInformationCompany', changeCompany)
         },
@@ -79,5 +72,4 @@ export default createStore({
             commit('mCompanyFilter', filterData)
         },
     },
-    modules: {},
 })
