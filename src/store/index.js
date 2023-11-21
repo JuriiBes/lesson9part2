@@ -37,8 +37,7 @@ export default createStore({
     },
     getters: {
         gCompanyList: (state) => state.companyList,
-        gCompanyForEdit: (state) => (companyId) =>
-            state.companyList[state.companyList.findIndex((company) => company.id == companyId)],
+        gCompanyForEdit: (state) => (companyId) => state.companyList.find((company) => company.id == companyId),
         gFilteredCompanyList: (state) =>
             state.companyList.filter((company) => complianceVerification(company, state.companyFilter)),
     },
